@@ -21,11 +21,11 @@
         <h1>LOGIN</h1>
           <div>
             <p>USERNAME :</p>
-            <input type="text" name="username" class="input-form" />
+            <input type="text" name="username" class="input-form" required/>
           </div>
           <div>
             <p>PASSWORD :</p>
-            <input type="password" name="password" class="input-form" />
+            <input type="password" name="password" class="input-form" required/>
           </div>
           <p id="error-text"><%= locals.error %></p>
           <a href="/register">Don't have an account?</a>

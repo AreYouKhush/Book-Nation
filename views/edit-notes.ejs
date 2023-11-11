@@ -20,6 +20,12 @@
                 <form action="<%= book.id %>/notes", method="get" hidden="true">
                     <button id="add-button">+ ADD NOTES</button>
                 </form>
+                <form action="<%= book.id %>/notes", method="get">
+                    <button id="add-button">+ ADD NOTES</button>
+                </form>
+                <form action="/mylibrary/add/<%= book.id %>", method="post">
+                    <button id="add-button" ><%= locals.message || "+ ADD TO LIBRARY"%></button>
+                </form>
             </div>
             <div id="text-container">
                 <h1><%= book.title %></h1>

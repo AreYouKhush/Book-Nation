@@ -15,10 +15,10 @@ body{
 #content{
     display: flex;
     justify-content: center;
-    flex-direction: column;
+    flex-direction: row;
     gap: 2rem;
     padding-inline: 2rem;
-    max-width: 91rem;
+    max-width: 80rem;
 }
 
 #cover-container{
@@ -26,15 +26,12 @@ body{
     gap: 2rem;
     align-items: center;
     flex-direction: column;
+    justify-content: center;
 }
 
-#text-container{
-    display: grid;
-    grid: auto / auto;
-    gap: 1rem;
-    align-items: center;
-    padding: 2rem;
-}
+/* #cover-container img{
+    height: 20rem !important;
+} */
 
 #add-button{
     border: none;
@@ -46,6 +43,14 @@ body{
     width: 200px;
 }
 
+#text-container{
+    display: grid;
+    grid: auto / auto;
+    gap: 1rem;
+    align-items: center;
+    padding-inline: 2rem;
+}
+
 #text-container>h1{
     justify-self: center;
     font-size: clamp(24px, 2vw, 38px);
@@ -54,11 +59,29 @@ body{
 #text-container>p{
     font-size: clamp(15px, 2vw, 24px);
     width: clamp(200px, 80vw, 1200px);
-    word-wrap: break-word;
+    max-inline-size: 50rem;
+    overflow-wrap: break-word;
 }
 
 #text-container>h3{
     justify-self: center;
+}
+
+@media (max-width: 1240px) {
+    #text-container>p{
+        max-inline-size: 30rem;
+    }
+
+    #text-container{
+        padding: 0;
+    }
+}
+
+@media (max-width: 860px) {
+    #content{
+        flex-direction: column;
+        padding: 0;
+    }
 }
 
 @media (max-width: 680px) {
@@ -66,6 +89,10 @@ body{
         margin-top: 130px;
     }
     #content{
+        flex-direction: column;
+        padding: 0;
+    }
+    #text-container{
         padding: 0;
     }
 }
@@ -73,6 +100,7 @@ body{
 /* Edit-Notes Elements start here */
 
 #notes{
+    padding-top: 2rem;
     display: flex;
     flex-direction: column;
     gap: 1rem;

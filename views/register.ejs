@@ -17,24 +17,60 @@
     <%- include("partials/header.ejs") %>
     <div class="wrapper">
       <section id="left-pane">
-        <form action="/login" id="login-form" method="post">
-            <h1>REGISTER</h1>
+        <form action="/register" id="login-form" method="post">
+          <h1>REGISTER</h1>
           <div id="name-wrapper">
             <div>
-              <input type="text" name="firstname" id="firstname" placeholder="First Name" class="input-form" />
+              <input
+                type="text"
+                name="firstname"
+                id="firstname"
+                placeholder="First Name"
+                class="input-form"
+                required
+              />
             </div>
             <div>
-              <input type="password" name="lastname" id="lastname" placeholder="Last Name" class="input-form" />
+              <input
+                type="text"
+                name="lastname"
+                id="lastname"
+                placeholder="Last Name"
+                class="input-form"
+              />
             </div>
           </div>
           <div>
-            <input type="email" name="email" class="other-entries" placeholder="E-mail" class="input-form" />
+            <input
+              type="email"
+              name="email"
+              class="other-entries"
+              placeholder="E-mail"
+              class="input-form"
+              required
+            />
           </div>
           <div>
-            <input type="text" name="username" class="other-entries" placeholder="Username" class="input-form" />
+            <input
+              type="text"
+              name="username"
+              class="other-entries"
+              placeholder="Username"
+              class="input-form"
+              required
+              id="username-js"
+            />
           </div>
           <div>
-            <input type="password" name="password" class="other-entries" placeholder="Password" class="input-form" />
+            <input
+              type="password"
+              name="password"
+              class="other-entries"
+              placeholder="Password"
+              class="input-form"
+              required
+              autocomplete
+            />
           </div>
           <p id="error-text"><%= locals.error %></p>
           <a href="/login">Already have an account?</a>
@@ -61,12 +97,12 @@
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script>
-      //   gsap.from(".image-wrapper", {
-      //     x: "100%",
-      //     duration: 0.5,
-      //     ease: "power1.inOut",
-      //     opacity: 0,
-      //   });
+      gsap.from(".image-wrapper", {
+        x: "100%",
+        duration: 0.5,
+        ease: "power1.inOut",
+        opacity: 0,
+      });
 
       if (document.getElementById("error-text").innerText) {
         setTimeout(() => {

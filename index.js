@@ -91,7 +91,7 @@ function getUserId(){
 }
 
 app.get('/', async(req, res) => {
-    console.log(req.cookies)
+    // console.log(req.cookies);
     const title = "Winnie the pooh";
     const books = await getBooks(title);
     res.render("index.ejs", {
@@ -109,18 +109,31 @@ app.post('/', async(req, res) => {
 
 app.get('/works/:id', async (req, res) => {
     const bookId = req.params.id;
-    // console.log(bookId);
+    const userId = Number(req.cookies.id);
     const book = await getSpecificBook(bookId);
+    let message;
+    const checkIfInLibrary = await db.query('SELECT * FROM my_library WHERE id = $1 AND book_id = $2', [userId, bookId]);
+    if(checkIfInLibrary.rows.length){
+        message = "✅ ALREADY ADDED";
+    }
     res.render("notes.ejs", {
-        book: book
+        book: book,
+        message: message
     });
-    // res.json(book);
 })
 
 app.get('/works/:id/notes', async(req, res) => {
-    const book = await getSpecificBook(req.params.id);
+    const bookId = req.params.id;
+    const userId = Number(req.cookies.id);
+    const book = await getSpecificBook(bookId);
+    let message;
+    const checkIfInLibrary = await db.query('SELECT * FROM my_library WHERE id = $1 AND book_id = $2', [userId, bookId]);
+    if(checkIfInLibrary.rows.length){
+        message = "✅ ALREADY ADDED";
+    }
     res.render("edit-notes.ejs", {
-        book: book
+        book: book,
+        message: message
     });
 })
 
@@ -139,6 +152,21 @@ app.get('/mylibrary', async(req, res) => {
         user_id: userId,
         books: booksArray
     })
+})
+
+app.post('/mylibrary/add/:id', async(req, res) => {
+    try{
+        const userId = Number(req.cookies.id);
+        try{
+            const bookId = req.params.id;
+            await db.query("INSERT INTO my_library (id, book_id) VALUES ($1, $2)", [userId, bookId]);
+            res.redirect(`/works/${bookId}`);
+        }catch (err){
+            console.log(err);
+        }
+    }catch (err){
+        res.redirect('/login');
+    }
 })
 
 app.get('/login', async(req, res) => {
@@ -163,6 +191,26 @@ app.post('/login', async(req, res) => {
 app.get('/register', async(req, res) => {
     res.render('register.ejs');
 });
+
+app.post('/register', async(req, res) => {
+    const fName = req.body["firstname"];
+    const lName = req.body["lastname"] || null;
+    const email = req.body["email"];
+    const username = req.body["username"];
+    const password = req.body["password"];
+    // console.log({fName, lName, email, username, password});
+    const response = await db.query("SELECT * FROM users WHERE user_name = $1", [username]);
+    if(response.rows.length){
+        res.render("register.ejs", {
+            error: "Username is already taken",
+        })
+    }else{
+        const q = await db.query("INSERT INTO users (user_name, password, email, firstname, lastname) VALUES ($1, $2, $3, $4, $5) RETURNING id", [username, password, email, fName, lName]);
+        const id = q.rows[0].id;
+        res.cookie('id', id, {maxAge: 2 * 60 * 60 * 1000, httpOnly: true});
+        res.redirect('/');
+    }
+})
 
 app.listen(port, () => {
     console.log(`Server running on port: ${port}`);
