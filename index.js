@@ -1,8 +1,10 @@
-import express from "express";
+import express, { response } from "express";
 import axios from "axios";
 import pg from "pg";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
+
+const API_URL = "http://localhost:4000"
 
 const db = new pg.Client({
     host: 'localhost',
@@ -86,24 +88,48 @@ async function getSpecificBook(id){
     return book;
 }
 
-function getUserId(){
-    
+async function getUserName(userId){
+    const response = await db.query("SELECT firstname FROM users WHERE id = $1", [userId]);
+    const firstname = response.rows[0].firstname;
+    return firstname;
+}
+
+async function checkIfInLibrary(userId, bookId){
+    let message;
+    const checkIfInLibrary = await db.query('SELECT * FROM my_library WHERE id = $1 AND book_id = $2', [userId, bookId]);
+    if(checkIfInLibrary.rows.length){
+        message = "✅ ADDED";
+    }
+    return message;
 }
 
 app.get('/', async(req, res) => {
-    // console.log(req.cookies);
+    let userId;
+    let firstname;
+    if(req.cookies.id){
+        userId = req.cookies.id;
+        firstname = await getUserName(userId);
+    }
     const title = "Winnie the pooh";
     const books = await getBooks(title);
     res.render("index.ejs", {
-        books: books
+        books: books,
+        name: firstname
     })
 })
 
 app.post('/', async(req, res) => {
+    let userId;
+    let firstname;
+    if(req.cookies.id){
+        userId = req.cookies.id;
+        firstname = await getUserName(userId);
+    }
     const title = req.body.searchTitle;
     const books = await getBooks(title);
     res.render("index.ejs", {
-        books: books
+        books: books,
+        name: firstname
     })
 })
 
@@ -111,14 +137,13 @@ app.get('/works/:id', async (req, res) => {
     const bookId = req.params.id;
     const userId = Number(req.cookies.id);
     const book = await getSpecificBook(bookId);
-    let message;
-    const checkIfInLibrary = await db.query('SELECT * FROM my_library WHERE id = $1 AND book_id = $2', [userId, bookId]);
-    if(checkIfInLibrary.rows.length){
-        message = "✅ ALREADY ADDED";
-    }
+    const message = await checkIfInLibrary(userId, bookId);
+    const noteResponse = await db.query("SELECT uid, note_title, note FROM notes WHERE id = $1 AND book_id = $2", [userId, bookId]);
+    // console.log(noteResponse.rows);
     res.render("notes.ejs", {
         book: book,
-        message: message
+        message: message,
+        savedNote: noteResponse.rows
     });
 })
 
@@ -126,32 +151,76 @@ app.get('/works/:id/notes', async(req, res) => {
     const bookId = req.params.id;
     const userId = Number(req.cookies.id);
     const book = await getSpecificBook(bookId);
-    let message;
-    const checkIfInLibrary = await db.query('SELECT * FROM my_library WHERE id = $1 AND book_id = $2', [userId, bookId]);
-    if(checkIfInLibrary.rows.length){
-        message = "✅ ALREADY ADDED";
-    }
-    res.render("edit-notes.ejs", {
+    res.render("add-notes.ejs", {
         book: book,
-        message: message
     });
 })
 
-app.get('/mylibrary', async(req, res) => {
+app.post('/works/:id/notes/add', async(req, res) => {
+    const bookId = req.params.id;
     const userId = Number(req.cookies.id);
-    let booksArray = []
-    const response = await db.query('SELECT book_id FROM my_library WHERE id = $1', [userId]);
-    const bookId = response.rows;
-    // console.log(bookId);
-    for(let i = 0; i < bookId.length; i++){
-        const book = await getSpecificBook(bookId[i].book_id);
-        booksArray.push(book);
-        // console.log(booksArray);
+    const noteTitle = req.body["note-title"];
+    const noteContent = req.body["note"];
+    if(noteTitle.trim() == "" && noteContent.trim() == ""){
+        res.redirect(`/works/${bookId}`);
+    }else{
+        await db.query("INSERT INTO notes (id, book_id, note_title, note) VALUES ($1, $2, $3, $4)", [userId, bookId, noteTitle, noteContent]);
+        res.redirect(`/works/${bookId}`);
     }
-    res.render("mylibrary.ejs", {
-        user_id: userId,
-        books: booksArray
-    })
+})
+
+app.get('/works/:bid/:uid/notes/edit', async(req, res) => {
+    const bookId = req.params.bid;
+    const userId = Number(req.cookies.id);
+    const noteId = req.params.uid;
+    const response = await db.query("SELECT uid, note_title, note FROM notes WHERE uid = $1", [noteId]);
+    const book = await getSpecificBook(bookId);
+    res.render("edit-note.ejs", {
+        book: book,
+        snote: response.rows[0],
+        uid: noteId
+    });
+})
+
+app.post('/works/:bid/:uid/notes/edit/save', async (req, res) => {
+    const bookId = req.params.bid;
+    const noteId = req.params.uid;
+    const noteTitle = req.body["note-title"];
+    const noteContent = req.body["note"];
+    if(noteTitle.trim() == "" && noteContent.trim() == ""){
+        res.redirect(`/works/${bookId}`);
+    }else{
+        await db.query("UPDATE notes SET note_title = $1, note = $2 WHERE uid = $3", [noteTitle, noteContent, noteId]);
+        res.redirect(`/works/${bookId}`);
+    }
+})
+
+app.post('/works/:bid/:uid/delete', async (req, res) => {
+    const noteId = req.params.uid;
+    const bookId = req.params.bid;
+    await db.query("DELETE FROM notes WHERE uid = $1", [noteId]);
+    res.redirect(`/works/${bookId}`);
+})
+
+app.get('/mylibrary', async(req, res) => {
+    try{
+        const userId = Number(req.cookies.id);
+        let booksArray = []
+        const response = await db.query('SELECT book_id FROM my_library WHERE id = $1', [userId]);
+        const bookId = response.rows;
+        // console.log(bookId);
+        for(let i = 0; i < bookId.length; i++){
+            const book = await getSpecificBook(bookId[i].book_id);
+            booksArray.push(book);
+            // console.log(booksArray);
+        }
+        res.render("mylibrary.ejs", {
+            user_id: userId,
+            books: booksArray
+        })
+    }catch{
+        res.redirect("/login");
+    }
 })
 
 app.post('/mylibrary/add/:id', async(req, res) => {

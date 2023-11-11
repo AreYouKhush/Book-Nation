@@ -15,7 +15,7 @@
   </head>
   <body>
     <%- include("partials/header.ejs") %>
-    <h1 id="message">Welcome Scholar!</h1>
+    <h1 id="message">Welcome <%= locals.name || "Scholar"%>!</h1>
     <section id="book-grid">
       <% if(locals.books) {%> <% books.forEach(book => {%>
       <form action="<%= book.id %>" , method="get">

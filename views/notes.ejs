@@ -1,40 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/styles/header.css">
-    <link rel="stylesheet" href="/styles/notes.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/styles/header.css" />
+    <link rel="stylesheet" href="/styles/notes.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap"
+      rel="stylesheet"
+    />
     <title>Book Nation</title>
-</head>
-<body>
+  </head>
+  <body>
     <%- include("partials/header.ejs") %>
 
     <section id="content">
-        <% if(locals.book) {%>
-            <div id="cover-container">
-                <img src="<%=book.coverURL%>" alt="" style="height:400px; width: 260px;">
-                <form action="<%= book.id %>/notes", method="get">
-                    <button id="add-button">+ ADD NOTES</button>
-                </form>
-                <form action="/mylibrary/add/<%= book.id %>", method="post">
-                    <button id="add-button" ><%= locals.message || "+ ADD TO LIBRARY"%></button>
-                </form>
-            </div>
-            <div id="text-container">
-                <h1><%= book.title %></h1>
-                <p><%= book.description %></p>
-                <h3><%= book.authorName %></h3>
-            </div>
-        <% } %>
+      <% if(locals.book) {%>
+      <div id="cover-container">
+        <img
+          src="<%=book.coverURL%>"
+          alt=""
+          style="height: 400px; width: 260px"
+        />
+        <form action="<%= book.id %>/notes" , method="get">
+          <button class="js-add-notes" id="add-button" hidden="true">
+            + ADD NOTES
+          </button>
+        </form>
+        <form action="/mylibrary/add/<%= book.id %>" , method="post">
+          <button class="js-add-to-lib" id="add-button">
+            <%= locals.message || "+ ADD TO LIBRARY"%>
+          </button>
+        </form>
+      </div>
+      <div id="text-container">
+        <h1><%= book.title %></h1>
+        <p><%= book.description %></p>
+        <h3><%= book.authorName %></h3>
+      </div>
+      <% } %>
     </section>
+    <section id="saved-notes">
+      <% if(locals.savedNote) {%> <% savedNote.forEach((n) => { %>
+      <div class="note-content">
+        <div class="title-flex">
+            <h1><%= n.note_title %></h1>
+            <div class="button-flex">
+                <form action="/works/<%= book.id %>/<%= n.uid %>/notes/edit" method="get">
+                    <button>
+                        EDIT
+                    </button>
+                </form>
+              <form action="/works/<%= book.id %>/<%= n.uid %>/delete" method="post">
+                  <button>
+                      DELETE
+                  </button>
+              </form>
+            </div>
+        </div>
+        <p><%= n.note %></p>
+      </div>
+      <% }) %> <% } %>
+    </section>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script>
-        const addButton = document.
-        if()
+      const addButton = document.querySelector(".js-add-to-lib").textContent;
+      if (addButton.trim() == "✅ ADDED") {
+        document.querySelector(".js-add-notes").removeAttribute("hidden");
+      }
     </script>
-</body>
+  </body>
 </html>

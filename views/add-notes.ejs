@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/styles/header.css">
+    <link rel="stylesheet" href="/styles/edit-notes.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <title>Book Nation</title>
+</head>
+<body>
+    <%- include("partials/header.ejs") %>
+
+    <section id="content">
+        <% if(locals.book) {%>
+                <h1><%= book.title %></h1>
+        <% } %>
+    </section>
+    <section>
+        <form action="/works/<%= book.id %>/notes/add" id="notes" method="post">
+            <input type="text" name="note-title" placeholder="Note Title" id="note-title">
+            <textarea name="note" id="note-area" cols="30" rows="10" maxlength="2000" placeholder="ADD YOUR NOTES HERE"></textarea>
+            <div class="button-container">
+                <button id="add-note-button">SAVE</button>
+                <form action="/works/<%= book.id %>">
+                    <button id="cancel-note-button">CANCEL</button>
+                </form>
+            </div>
+        </form>
+    </section>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+</body>
+</html>
