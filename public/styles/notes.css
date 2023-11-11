@@ -1,0 +1,103 @@
+*{
+    font-family: 'Montserrat', sans-serif;
+    box-sizing: border-box;
+    margin: 0;
+}
+
+body{
+    margin-top: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#content{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    gap: 2rem;
+    padding-inline: 2rem;
+    max-width: 91rem;
+}
+
+#cover-container{
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    flex-direction: column;
+}
+
+#text-container{
+    display: grid;
+    grid: auto / auto;
+    gap: 1rem;
+    align-items: center;
+    padding: 2rem;
+}
+
+#add-button{
+    border: none;
+    border-radius: 20px;
+    background-color: black;
+    color: white;
+    font-weight: bold;
+    height: 50px;
+    width: 200px;
+}
+
+#text-container>h1{
+    justify-self: center;
+    font-size: clamp(24px, 2vw, 38px);
+}
+
+#text-container>p{
+    font-size: clamp(15px, 2vw, 24px);
+    width: clamp(200px, 80vw, 1200px);
+    word-wrap: break-word;
+}
+
+#text-container>h3{
+    justify-self: center;
+}
+
+@media (max-width: 680px) {
+    body{
+        margin-top: 130px;
+    }
+    #content{
+        padding: 0;
+    }
+}
+
+/* Edit-Notes Elements start here */
+
+#notes{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+    padding-bottom: 2rem;
+}
+
+#note-area{
+    width: clamp(15rem , 80vw, 80rem);
+    font-size: 20px;
+    font-weight: normal;
+    padding: 1rem;
+}
+
+#add-note-button,
+#cancel-note-button{
+    width: 100px;
+    height: 50px;
+    background-color: rgb(80, 78, 78);
+    font-weight: bold;
+    border: none;
+    border-radius: 20px;
+    color: white;
+}
+
+#add-note-button{
+    margin-right: 1rem;
+}

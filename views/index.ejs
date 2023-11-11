@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/styles/header.css">
+    <link rel="stylesheet" href="/styles/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <title>Book Nation</title>
+</head>
+<body>
+    <%- include("partials/header.ejs") %>
+    <section id="book-grid">
+        <% if(locals.books) {%>
+        <% books.forEach(book => {%>
+            <form action="<%= book.id %>", method="get">
+                <div class="cell" onclick="this.parentNode.submit();">
+                    <div id="cover-container">
+                        <img src="<%=book.coverURL%>" alt="" style="height: 350px; width: 230px;">
+                    </div>
+                    <div id="text-box">
+                        <h3><%= book.title %></h3>
+                        <h4><%= book.publishYear %></h4>
+                        <h4><%= book.authorName %></h4>
+                    </div>
+                </div>
+            </form>
+        <% }) %>
+        <% } %>
+    </section>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+</body>
+</html>

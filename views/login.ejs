@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/styles/header.css" />
+    <link rel="stylesheet" href="/styles/login.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <title>Book Nation</title>
+  </head>
+  <body>
+    <%- include("partials/header.ejs") %>
+    <div class="wrapper">
+      <section id="left-pane">
+        <form action="/login" id="login-form" method="post">
+        <h1>LOGIN</h1>
+          <div>
+            <p>USERNAME :</p>
+            <input type="text" name="username" class="input-form" />
+          </div>
+          <div>
+            <p>PASSWORD :</p>
+            <input type="password" name="password" class="input-form" />
+          </div>
+          <p id="error-text"><%= locals.error %></p>
+          <a href="/register">Don't have an account?</a>
+          <button id="login-button">LOGIN</button>
+        </form>
+      </section>
+      <section id="right-pane">
+        <div class="image-wrapper">
+          <img
+            src="\images\2111.w039.n003.23B.p1.23.jpg"
+            alt=""
+            class="image"
+          />
+          <div class="text-wrapper">
+            <h1 class="text-in-picture">
+              READ <br />
+              BOOKS. <br />
+              TAKE <br />
+              NOTES.
+            </h1>
+          </div>
+        </div>
+      </section>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script>
+      gsap.from(".image-wrapper", {
+        x: "100%",
+        duration: 0.5,
+        ease: "power1.inOut",
+        opacity: 0,
+      });
+
+      if(document.getElementById('error-text').innerText){
+        setTimeout(()=>{
+          document.getElementById('error-text').innerText = "";
+        }, 2000);
+      }
+    </script>
+  </body>
+</html>

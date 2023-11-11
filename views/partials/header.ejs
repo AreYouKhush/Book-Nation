@@ -1,0 +1,54 @@
+<header>
+  <div id="drop-down" hidden="true" onclick="showNav();">
+    <nav>
+      <a href="/login">Login</a>
+      <a href="/register">Register</a>
+      <a href="/mylibrary">My Library</a>
+    </nav>
+  </div>
+  <div id="navbar-wrapper">
+    <div id="burger-menu">
+      <img id="hamburger-image" src="/images/hamburger.png" alt="" onclick="showNav();"/>
+    </div>
+    <h1 style="margin: 0; cursor: pointer" href="/">
+      <a href="/" style="color: white; text-decoration: none">Book Nation</a>
+    </h1>
+    <a href="/login" class="nav-button">Login</a>
+    <a href="/register" class="nav-button">Register</a>
+    <form action="/mylibrary" method="get" id="my-lib-form">
+      <button class="nav-button">My Library ></button>
+    </form>
+  </div>
+  <div id="search-container">
+    <form action="/" method="post" hidden="true" id="form">
+      <input type="text" name="searchTitle" id="search-bar" />
+      <button id="submit-button">Submit</button>
+    </form>
+    <button id="show-button" onclick="show()">Search</button>
+  </div>
+  <!-- <form id="autoSubmitForm">
+    <input type="text" name="user_id" value="<%= locals.user_id %>" hidden="true" id="user_id">
+  </form> -->
+</header>
+<script>
+  let navStat = 0;
+  function show() {
+    document.getElementById("show-button").hidden = "true";
+    document.getElementById("form").removeAttribute("hidden");
+    gsap.from("#search-bar", { width: 0, duration: 0.2, ease: "power1.out" });
+  }
+  function showNav(){
+    if(navStat === 0){
+      document.getElementById("drop-down").removeAttribute("hidden");
+      gsap.fromTo("#drop-down", {y:"-100%", duration: 1, backdropFilter: "blur(10px)"}, {y: 0});
+      navStat = 1;
+    }else{
+      gsap.fromTo("#drop-down", {y:0, duration: 1}, {y: "-100%"});
+      navStat = 0;
+    }
+  }
+  // setTimeout(() => {
+  //   alert(document.getElementById("user_id").value)
+  //   document.forms["autoSubmitForm"].submit();
+  // }, 1000);
+</script>

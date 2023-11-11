@@ -1,0 +1,146 @@
+* {
+    font-family: "Montserrat", sans-serif;
+    box-sizing: border-box;
+  }
+
+  header {
+    position: fixed;
+    height: 75px;
+    display: flex;
+    justify-content: space-between;
+    color: white;
+    align-items: center;
+    background-color: black;
+    width: 100vw;
+    top: 0;
+    left: 0;
+    padding-left: 5rem;
+    padding-right: 5rem;
+    z-index: 100;
+  }
+
+  #search-container {
+    max-width: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+  }
+
+  #search-bar {
+    border: none;
+    border-radius: 20px;
+    height: 25px;
+    padding-left: 5px;
+    font-weight: bold;
+  }
+
+  #show-button,
+  #submit-button {
+    border: none;
+    border-radius: 20px;
+    background-color: white;
+    font-weight: bold;
+    height: 25px;
+    width: 80px;
+  }
+
+  #navbar-wrapper{
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  #burger-menu{
+    cursor: pointer;
+  }
+
+  #hamburger-image{
+    height: 45px;
+  }
+
+  #drop-down{
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+
+  #drop-down > nav {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3rem;
+    height: 100%;
+  }
+
+  #drop-down a{
+    text-decoration: none;
+    color: white;
+    font-size: 35px;
+    font-weight: bold;
+  }
+
+  .nav-button{
+    text-decoration: underline;
+    color: rgb(177, 177, 177);
+    border: none;
+    background-color: black;
+    cursor: pointer;
+  }
+
+  @media (max-width: 890px){
+    #my-lib-form,
+    .nav-button{
+      display: none !important;
+    }
+    h1{
+      font-size: 27px;
+    }
+    #burger-menu{
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+    }
+  }
+  
+  @media (max-width: 670px){
+    header{
+      height: 120px;
+      flex-direction: column;
+      justify-content: center;
+      gap: 1rem;
+    }
+    #burger-menu{
+      position: absolute;
+      top: 1.2rem;
+      left: 1rem;
+    }
+  }
+
+  @media (max-width: 454px){
+    header{
+      padding: 0;
+    }
+    h1{
+      font-size: 30px;
+    }
+  }
+
+  @media (max-width: 370px){
+    #hamburger-image{
+      height: 37px;
+    }
+    #burger-menu{
+      top: 1.35rem;
+    }
+  }
+
+  @media (min-width: 890px){
+    #burger-menu{
+      display: none !important;
+    }
+  }

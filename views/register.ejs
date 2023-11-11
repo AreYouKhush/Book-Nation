@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/styles/header.css" />
+    <link rel="stylesheet" href="/styles/register.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <title>Book Nation</title>
+  </head>
+  <body>
+    <%- include("partials/header.ejs") %>
+    <div class="wrapper">
+      <section id="left-pane">
+        <form action="/login" id="login-form" method="post">
+            <h1>REGISTER</h1>
+          <div id="name-wrapper">
+            <div>
+              <input type="text" name="firstname" id="firstname" placeholder="First Name" class="input-form" />
+            </div>
+            <div>
+              <input type="password" name="lastname" id="lastname" placeholder="Last Name" class="input-form" />
+            </div>
+          </div>
+          <div>
+            <input type="email" name="email" class="other-entries" placeholder="E-mail" class="input-form" />
+          </div>
+          <div>
+            <input type="text" name="username" class="other-entries" placeholder="Username" class="input-form" />
+          </div>
+          <div>
+            <input type="password" name="password" class="other-entries" placeholder="Password" class="input-form" />
+          </div>
+          <p id="error-text"><%= locals.error %></p>
+          <a href="/login">Already have an account?</a>
+          <button id="login-button">REGISTER</button>
+        </form>
+      </section>
+      <section id="right-pane">
+        <div class="image-wrapper">
+          <img
+            src="\images\2111.w039.n003.23B.p1.23.jpg"
+            alt=""
+            class="image"
+          />
+          <div class="text-wrapper">
+            <h1 class="text-in-picture">
+              READ <br />
+              BOOKS. <br />
+              TAKE <br />
+              NOTES.
+            </h1>
+          </div>
+        </div>
+      </section>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script>
+      //   gsap.from(".image-wrapper", {
+      //     x: "100%",
+      //     duration: 0.5,
+      //     ease: "power1.inOut",
+      //     opacity: 0,
+      //   });
+
+      if (document.getElementById("error-text").innerText) {
+        setTimeout(() => {
+          document.getElementById("error-text").innerText = "";
+        }, 2000);
+      }
+    </script>
+  </body>
+</html>
