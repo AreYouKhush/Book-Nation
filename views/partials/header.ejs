@@ -1,8 +1,12 @@
 <header>
   <div id="drop-down" hidden="true" onclick="showNav();">
     <nav>
+      <% if(!Number(locals.status)){ %>
       <a href="/login">Login</a>
       <a href="/register">Register</a>
+      <% } else { %>
+        <a href="/logout">Logout</a>
+      <% } %>
       <a href="/mylibrary">My Library</a>
     </nav>
   </div>
@@ -13,8 +17,12 @@
     <h1 style="margin: 0; cursor: pointer" href="/">
       <a href="/" style="color: white; text-decoration: none">Book Nation</a>
     </h1>
+    <% if(!Number(locals.status)){ %>
     <a href="/login" class="nav-button">Login</a>
     <a href="/register" class="nav-button">Register</a>
+    <% } else { %>
+      <a href="/logout" class="nav-button">Logout</a>
+      <% } %>
     <form action="/mylibrary" method="get" id="my-lib-form">
       <button class="nav-button">My Library ></button>
     </form>

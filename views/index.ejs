@@ -16,8 +16,9 @@
   <body>
     <%- include("partials/header.ejs") %>
     <h1 id="message">Welcome <%= locals.name || "Scholar"%>!</h1>
+    <% if(books.length !== 0) {%> 
     <section id="book-grid">
-      <% if(locals.books) {%> <% books.forEach(book => {%>
+        <% books.forEach(book => {%>
       <form action="<%= book.id %>" , method="get">
         <div class="cell" onclick="this.parentNode.submit();">
           <div id="cover-container">
@@ -34,8 +35,14 @@
           </div>
         </div>
       </form>
-      <% }) %> <% } %>
+      <% }) %> 
     </section>
+      <% } else {%>
+        <div id="empty">
+          <img src="\images\book.png" alt="">
+          <p>Wow such empty!🫢</p>
+        </div>
+        <% } %>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script>
         gsap.from("#message", {opacity: 0, ease: "power1.inOut", duration: 0.5})

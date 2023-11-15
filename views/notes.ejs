@@ -30,7 +30,7 @@
           </button>
         </form>
         <form action="/mylibrary/add/<%= book.id %>" , method="post">
-          <button class="js-add-to-lib" id="add-button">
+          <button class="js-add-to-lib" id="add-button-js">
             <%= locals.message || "+ ADD TO LIBRARY"%>
           </button>
         </form>
@@ -70,6 +70,7 @@
       const addButton = document.querySelector(".js-add-to-lib").textContent;
       if (addButton.trim() == "✅ ADDED") {
         document.querySelector(".js-add-notes").removeAttribute("hidden");
+        document.getElementById("add-button-js").disabled = "disabled";
       }
     </script>
   </body>

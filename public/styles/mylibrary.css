@@ -1,0 +1,43 @@
+.library-actions{
+    border: none;
+    background-color: black;
+    color: white;
+    font-weight: bold;
+    width: 7rem;
+    height: 2rem;
+    margin-top: 0.5rem;
+    border-radius: 5px;
+}
+
+.library-actions a{
+    text-decoration: none;
+    color: white;
+}
+
+#library-remove{
+    background-color: rgb(77, 31, 31);
+}
+
+.library-action-btn-container{
+    display: flex;
+    gap: 0.5rem;
+}
+
+#empty{
+    display: flex;
+    align-items: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: clamp(20rem, 30rem);   
+}
+
+#empty img{
+    width: clamp(50px, 4vw, 80px);
+}
+
+#empty p{
+    font-weight: normal;
+    text-transform: capitalize;
+}

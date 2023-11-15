@@ -103,16 +103,28 @@ async function checkIfInLibrary(userId, bookId){
     return message;
 }
 
+function checkIfLoggedIn(){
+    let status;
+    if("Logged in"){
+        return 1;
+    }else{
+        return 0;
+    }
+}
+
 app.get('/', async(req, res) => {
     let userId;
     let firstname;
+    let status = 0;
     if(req.cookies.id){
         userId = req.cookies.id;
         firstname = await getUserName(userId);
+        status = 1;
     }
     const title = "Winnie the pooh";
     const books = await getBooks(title);
     res.render("index.ejs", {
+        status: status,
         books: books,
         name: firstname
     })
@@ -121,13 +133,16 @@ app.get('/', async(req, res) => {
 app.post('/', async(req, res) => {
     let userId;
     let firstname;
+    let status = 0;
     if(req.cookies.id){
         userId = req.cookies.id;
         firstname = await getUserName(userId);
+        status = 1;
     }
     const title = req.body.searchTitle;
     const books = await getBooks(title);
     res.render("index.ejs", {
+        status: status,
         books: books,
         name: firstname
     })
@@ -135,15 +150,23 @@ app.post('/', async(req, res) => {
 
 app.get('/works/:id', async (req, res) => {
     const bookId = req.params.id;
-    const userId = Number(req.cookies.id);
+    let noteResponse;
+    let userId;
+    let status = 0;
+    if(req.cookies.id){
+        userId = Number(req.cookies.id);
+        noteResponse = await db.query("SELECT uid, note_title, note FROM notes WHERE id = $1 AND book_id = $2", [userId, bookId]);
+        noteResponse = noteResponse.rows;
+        status = 1
+    }
     const book = await getSpecificBook(bookId);
     const message = await checkIfInLibrary(userId, bookId);
-    const noteResponse = await db.query("SELECT uid, note_title, note FROM notes WHERE id = $1 AND book_id = $2", [userId, bookId]);
     // console.log(noteResponse.rows);
     res.render("notes.ejs", {
+        status: status,
         book: book,
         message: message,
-        savedNote: noteResponse.rows
+        savedNote: noteResponse
     });
 })
 
@@ -152,6 +175,7 @@ app.get('/works/:id/notes', async(req, res) => {
     const userId = Number(req.cookies.id);
     const book = await getSpecificBook(bookId);
     res.render("add-notes.ejs", {
+        status: 1,
         book: book,
     });
 })
@@ -176,6 +200,7 @@ app.get('/works/:bid/:uid/notes/edit', async(req, res) => {
     const response = await db.query("SELECT uid, note_title, note FROM notes WHERE uid = $1", [noteId]);
     const book = await getSpecificBook(bookId);
     res.render("edit-note.ejs", {
+        status: 1,
         book: book,
         snote: response.rows[0],
         uid: noteId
@@ -215,6 +240,7 @@ app.get('/mylibrary', async(req, res) => {
             // console.log(booksArray);
         }
         res.render("mylibrary.ejs", {
+            status: 1,
             user_id: userId,
             books: booksArray
         })
@@ -226,10 +252,21 @@ app.get('/mylibrary', async(req, res) => {
 app.post('/mylibrary/add/:id', async(req, res) => {
     try{
         const userId = Number(req.cookies.id);
+        const bookId = req.params.id;
+        await db.query("INSERT INTO my_library (id, book_id) VALUES ($1, $2)", [userId, bookId]);
+        res.redirect(`/works/${bookId}`);
+    }catch (err){
+        res.redirect('/login');
+    }
+})
+
+app.get('/mylibrary/remove/:id', async(req, res) => {
+    try{
+        const userId = Number(req.cookies.id);
         try{
             const bookId = req.params.id;
-            await db.query("INSERT INTO my_library (id, book_id) VALUES ($1, $2)", [userId, bookId]);
-            res.redirect(`/works/${bookId}`);
+            await db.query("DELETE FROM my_library WHERE id = $1 AND book_id = $2", [userId, bookId]);
+            res.redirect(`/mylibrary`);
         }catch (err){
             console.log(err);
         }
@@ -247,7 +284,7 @@ app.post('/login', async(req, res) => {
     const password = req.body["password"];
     const response = await db.query("SELECT id FROM users WHERE user_name = $1 AND password = $2", [user, password]);
     if(!response.rows.length){
-        res.render('login.ejs', {error: "Username or Password already exists!"});
+        res.render('login.ejs', {error: "Username or Password are incorrect!"});
     }else{
         const id = response.rows[0].id;
         // window.localStorage.setItem("userId", id); Local Storage does not work in noje js
@@ -279,6 +316,11 @@ app.post('/register', async(req, res) => {
         res.cookie('id', id, {maxAge: 2 * 60 * 60 * 1000, httpOnly: true});
         res.redirect('/');
     }
+})
+
+app.get("/logout", (req, res) => {
+    res.clearCookie("id");
+    res.redirect("/");
 })
 
 app.listen(port, () => {

@@ -33,7 +33,8 @@ body{
     height: 20rem !important;
 } */
 
-#add-button{
+#add-button,
+#add-button-js{
     border: none;
     border-radius: 20px;
     background-color: black;

@@ -59,6 +59,25 @@ h4{
     border-radius: 15px;
 }
 
+#empty{
+    display: flex;
+    align-items: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: clamp(20rem, 30rem);   
+}
+
+#empty img{
+    width: clamp(50px, 4vw, 80px);
+}
+
+#empty p{
+    font-weight: normal;
+    text-transform: capitalize;
+}
+
 @media (max-width: 1260px){
     #book-grid{
         grid: auto / auto auto auto;
