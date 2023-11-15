@@ -1,21 +1,23 @@
-import express, { response } from "express";
+import express from "express";
 import axios from "axios";
 import pg from "pg";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
+import dotenv from "dotenv";
 
-const API_URL = "http://localhost:4000"
+dotenv.config();
 
 const db = new pg.Client({
-    host: 'localhost',
-    user: 'postgres',
-    database: 'books',
-    password: 'prouddaddy@08',
-    port: 5432
+    host: process.env.HOST,
+    user: process.env.USER,
+    database: process.env.DB,
+    password: process.env.PASSWORD,
+    port: 5432,
+    ssl: true
 })
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 db.connect();
 
@@ -324,5 +326,5 @@ app.get("/logout", (req, res) => {
 })
 
 app.listen(port, () => {
-    console.log(`Server running on port: ${port}`);
+    console.log(`Server running at http://localhost:${port}`);
 })
