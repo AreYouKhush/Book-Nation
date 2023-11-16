@@ -82,6 +82,7 @@ body{
     text-transform: capitalize;
     margin-right: 1rem;
     font-weight: bold;
+    text-shadow: 4px 4px 12px rgba(0, 0, 0, 0.507);
 }
 
 #login-form>p{
