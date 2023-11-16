@@ -20,12 +20,12 @@
         <form action="/login" id="login-form" method="post">
         <h1>LOGIN</h1>
           <div>
-            <p>USERNAME :</p>
-            <input type="text" name="username" class="input-form" required/>
+            <!-- <p>USERNAME :</p> -->
+            <input type="text" name="username" class="input-form" placeholder="Username" required/>
           </div>
           <div>
-            <p>PASSWORD :</p>
-            <input type="password" name="password" class="input-form" required autocomplete=""/>
+            <!-- <p>PASSWORD :</p> -->
+            <input type="password" name="password" class="input-form" placeholder="Password" required autocomplete=""/>
           </div>
           <p id="error-text"><%= locals.error %></p>
           <a href="/register">Don't have an account?</a>

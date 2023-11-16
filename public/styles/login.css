@@ -41,7 +41,7 @@ body{
 }
 
 .image{
-    height: calc(100vh - 75px);
+    max-height: calc(100vh - 75px);
 }
 
 #login-form{
@@ -68,7 +68,7 @@ body{
 }
 
 #login-form input{
-    width: clamp(150px, 30vw , 300px);
+    width: clamp(250px, 20vw , 350px);
     height: 2.5rem;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.226);
     border: none;
