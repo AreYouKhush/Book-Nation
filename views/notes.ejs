@@ -42,27 +42,99 @@
       </div>
       <% } %>
     </section>
-    <section id="saved-notes">
-      <% if(locals.savedNote) {%> <% savedNote.forEach((n) => { %>
-      <div class="note-content">
-        <div class="title-flex">
-            <h1><%= n.note_title %></h1>
-            <div class="button-flex">
-                <form action="/works/<%= book.id %>/<%= n.uid %>/notes/edit" method="get">
-                    <button>
-                        EDIT
-                    </button>
+
+    <section id="comment-section">
+      <div id="add-comment-box">
+        <p><%= comments.length %> Comments</p>
+        <% if(locals.book) {%>
+        <form action="/add/comment/<%= book.id  %>" method="post">
+          <div id="comment-form">
+            <input
+              type="text"
+              name="comment"
+              placeholder="Write a comment"
+              id="comment-input"
+            />
+            <button>Submit</button>
+          </div>
+        </form>
+        <% } %>
+      </div>
+
+      <% if (locals.myComments){ %> <% myComments.forEach((c) => { %>
+        <hr />
+        <div class="myComment-body">
+          <div>
+            <p class="user-name-myComment"><%= c.userName %></p>
+            <div style="position: relative">
+              <img
+                src="/images/dots.png"
+                alt=""
+                onclick="showHideCommentTT('tooltip<%= c.uid %>');"
+              />
+              <div class="tooltip" id="tooltip<%= c.uid %>" hidden>
+                <form
+                  action="/delete/comment/<%= c.uid %>/<%= book.id  %>"
+                  method="post"
+                >
+                  <button>DELETE</button>
                 </form>
-              <form action="/works/<%= book.id %>/<%= n.uid %>/delete" method="post">
-                  <button>
-                      DELETE
-                  </button>
+              </div>
+            </div>
+          </div>
+          <p class="content-of-myComments"><%= c.comment %></p>
+        </div>
+        <% })} %>
+
+      <% if (locals.comments){ %> <% comments.forEach((c) => { %>
+      <hr />
+      <div class="comment-body">
+        <div>
+          <p class="user-name-comment"><%= c.userName %></p>
+        </div>
+        <p class="content-of-comments"><%= c.comment %></p>
+      </div>
+      <% })} %>
+    </section>
+
+    <section id="note-section">
+      <div id="add-note-box">
+        <p>Notes</p>
+        <form action="/works/<%= book.id %>/notes" method="get">
+          <button id="add-a-note-button" hidden="true">+ Add a Note</button>
+        </form>
+      </div>
+      <% if (locals.savedNote){ %> <% savedNote.forEach((n) => { %>
+      <hr />
+      <div class="note-body">
+        <div>
+          <p class="note-title"><%= n.note_title %></p>
+          <div style="position: relative">
+            <img
+              src="/images/dots.png"
+              alt=""
+              onclick="showHideNoteTT('tooltip<%= n.uid %>');"
+            />
+            <div class="tooltip" id="tooltip<%= n.uid %>" hidden>
+              <form
+                action="/works/<%= book.id %>/<%= n.uid %>/notes/edit"
+                method="get"
+              >
+                <button>EDIT</button>
+              </form>
+              <hr />
+              <form
+                action="/works/<%= book.id %>/<%= n.uid %>/delete"
+                method="post"
+              >
+                <button>DELETE</button>
               </form>
             </div>
+          </div>
         </div>
-        <p><%= n.note %></p>
+        <p class="content-of-notes"><%= n.note %></p>
       </div>
-      <% }) %> <% } %>
+      <% })} %>
     </section>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -70,7 +142,44 @@
       const addButton = document.querySelector(".js-add-to-lib").textContent;
       if (addButton.trim() == "✅ ADDED") {
         document.querySelector(".js-add-notes").removeAttribute("hidden");
+        document.getElementById("add-a-note-button").removeAttribute("hidden");
         document.getElementById("add-button-js").disabled = "disabled";
+      }
+      let hidden = 1;
+      let prevId;
+      function showHideNoteTT(id) {
+        if (prevId != id) {
+          hidden = 1;
+        }
+        document.querySelectorAll(".tooltip").forEach((e) => {
+          e.setAttribute("hidden", "true");
+        });
+        if (hidden) {
+          document.getElementById(id).removeAttribute("hidden");
+          hidden = 0;
+        } else {
+          document.getElementById(id).setAttribute("hidden", "true");
+          hidden = 1;
+        }
+        prevId = id;
+      }
+
+      let prevCommentId;
+      function showHideCommentTT(id) {
+        if (prevId != id) {
+          hidden = 1;
+        }
+        document.querySelectorAll(".tooltip").forEach((e) => {
+          e.setAttribute("hidden", "true");
+        });
+        if (hidden) {
+          document.getElementById(id).removeAttribute("hidden");
+          hidden = 0;
+        } else {
+          document.getElementById(id).setAttribute("hidden", "true");
+          hidden = 1;
+        }
+        prevCommentId = id;
       }
     </script>
   </body>

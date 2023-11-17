@@ -24,8 +24,11 @@ CREATE TABLE notes (
 	note_title text,
 	note text
 );
---To Insert users manually
-INSERT INTO users (user_name, password) VALUES ('admin', 'admin'), ('test', 'test');
 
---To Insert books manually
-INSERT INTO my_library VALUES (1, 'OL82563W'), (1, 'OL82537W'), (1, 'OL82548W'), (1, 'OL257943W'), (2, 'OL5753057W'), (2, 'OL8215148W'), (2, 'OL8215149W'), (2, 'OL13268171W');
+--Create comments table
+CREATE TABLE comments (
+	uid serial PRIMARY KEY,
+	user_id int REFERENCES users(id),
+	book_id text not null,
+	comment text not null,
+)

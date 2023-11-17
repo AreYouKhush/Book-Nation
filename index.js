@@ -7,13 +7,21 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+// const db = new pg.Client({
+//     host: process.env.HOST,
+//     user: process.env.USER,
+//     database: process.env.DB,
+//     password: process.env.PASSWORD,
+//     port: 5432,
+//     ssl: true
+// })
+
 const db = new pg.Client({
-    host: process.env.HOST,
-    user: process.env.USER,
-    database: process.env.DB,
-    password: process.env.PASSWORD,
+    host: "localhost",
+    user: "postgres",
+    database: "books",
+    password: "prouddaddy@08",
     port: 5432,
-    ssl: true
 })
 
 const app = express();
@@ -105,12 +113,34 @@ async function checkIfInLibrary(userId, bookId){
     return message;
 }
 
-function checkIfLoggedIn(){
-    let status;
-    if("Logged in"){
-        return 1;
+async function getMyComment(bookId, userId){
+    const commentRes = await db.query("SELECT * FROM comments WHERE book_id = $1 AND user_id = $2", [bookId, userId]);
+    let myCommentArr = [];
+    for(let i = 0; i < commentRes.rows.length; i++){
+        commentRes.rows[i].userName = await getUserName(commentRes.rows[i].user_id);
+        myCommentArr.push(commentRes.rows[i]);
+    }
+    // console.log(myCommentArr);
+    return myCommentArr;
+}
+
+async function getComment(bookId, userId){
+    if(userId){
+        const commentRes = await db.query("SELECT * FROM comments WHERE book_id = $1 AND user_id != $2", [bookId, userId]);
+        let commentArr = [];
+        for(let i = 0; i < commentRes.rows.length; i++){
+            commentRes.rows[i].userName = await getUserName(commentRes.rows[i].user_id);
+            commentArr.push(commentRes.rows[i]);
+        }
+        return commentArr;
     }else{
-        return 0;
+        const commentRes = await db.query("SELECT * FROM comments WHERE book_id = $1", [bookId]);
+        let commentArr = [];
+        for(let i = 0; i < commentRes.rows.length; i++){
+            commentRes.rows[i].userName = await getUserName(commentRes.rows[i].user_id);
+            commentArr.push(commentRes.rows[i]);
+        }
+        return commentArr;
     }
 }
 
@@ -163,12 +193,16 @@ app.get('/works/:id', async (req, res) => {
     }
     const book = await getSpecificBook(bookId);
     const message = await checkIfInLibrary(userId, bookId);
-    // console.log(noteResponse.rows);
+    const commentArr = await getComment(bookId, userId);
+    const myCommentsArr = await getMyComment(bookId, userId);
+    // console.log(commentArr);
     res.render("notes.ejs", {
         status: status,
         book: book,
         message: message,
-        savedNote: noteResponse
+        savedNote: noteResponse,
+        myComments: myCommentsArr,
+        comments: commentArr
     });
 })
 
@@ -183,15 +217,19 @@ app.get('/works/:id/notes', async(req, res) => {
 })
 
 app.post('/works/:id/notes/add', async(req, res) => {
-    const bookId = req.params.id;
-    const userId = Number(req.cookies.id);
-    const noteTitle = req.body["note-title"];
-    const noteContent = req.body["note"];
-    if(noteTitle.trim() == "" && noteContent.trim() == ""){
-        res.redirect(`/works/${bookId}`);
-    }else{
-        await db.query("INSERT INTO notes (id, book_id, note_title, note) VALUES ($1, $2, $3, $4)", [userId, bookId, noteTitle, noteContent]);
-        res.redirect(`/works/${bookId}`);
+    try{
+        const userId = Number(req.cookies.id);
+        const bookId = req.params.id;
+        const noteTitle = req.body["note-title"];
+        const noteContent = req.body["note"];
+        if(noteTitle.trim() == "" && noteContent.trim() == ""){
+            res.redirect(`/works/${bookId}`);
+        }else{
+            await db.query("INSERT INTO notes (id, book_id, note_title, note) VALUES ($1, $2, $3, $4)", [userId, bookId, noteTitle, noteContent]);
+            res.redirect(`/works/${bookId}`);
+        }
+    }catch(err){
+        res.redirect('/login')
     }
 })
 
@@ -323,6 +361,25 @@ app.post('/register', async(req, res) => {
 app.get("/logout", (req, res) => {
     res.clearCookie("id");
     res.redirect("/");
+})
+
+app.post("/add/comment/:id", async(req, res) => {
+    try{
+        const userId = Number(req.cookies.id);
+        const bookId = req.params.id;
+        const comment = req.body.comment;
+        await db.query("INSERT INTO comments (user_id, book_id, comment) VALUES ($1, $2, $3)", [userId, bookId, comment]);
+        res.redirect(`/works/${bookId}`);
+    }catch(err){
+        res.redirect("/login");
+    }
+})
+
+app.post("/delete/comment/:id/:bid", async(req, res) => {
+    const bookId = req.params.bid;
+    const commentId = req.params.id;
+    await db.query("DELETE FROM comments WHERE uid = $1", [commentId]);
+    res.redirect(`/works/${bookId}`);
 })
 
 app.listen(port, () => {
