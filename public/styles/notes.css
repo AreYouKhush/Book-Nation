@@ -117,7 +117,7 @@ body{
 #comment-section,
 #note-section{
     padding-top: 1rem;
-    width: clamp(17rem, 74vw , 75rem);
+    width: clamp(18rem, 70vw , 80rem);
     display: grid;
     grid: auto / auto;
     grid-auto-rows: auto;
@@ -134,7 +134,7 @@ body{
 .myComment-body .content-of-myComments,
 .note-body .content-of-notes{
     font-weight: normal;
-    inline-size: clamp(12rem, 67vw , 73rem);
+    inline-size: clamp(12rem, 60vw , 70rem);
     overflow-wrap: break-word;
 }
 
@@ -194,7 +194,7 @@ body{
 .note-title,
 .user-name-comment,
 .user-name-myComment{
-    inline-size: clamp(12rem, 67vw , 73rem);
+    inline-size: clamp(12rem, 60vw , 70rem);
     overflow-wrap: break-word;
 }
 
