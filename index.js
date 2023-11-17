@@ -7,21 +7,13 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-// const db = new pg.Client({
-//     host: process.env.HOST,
-//     user: process.env.USER,
-//     database: process.env.DB,
-//     password: process.env.PASSWORD,
-//     port: 5432,
-//     ssl: true
-// })
-
 const db = new pg.Client({
-    host: "localhost",
-    user: "postgres",
-    database: "books",
-    password: "prouddaddy@08",
+    host: process.env.HOST,
+    user: process.env.USER,
+    database: process.env.DB,
+    password: process.env.PASSWORD,
     port: 5432,
+    ssl: true
 })
 
 const app = express();
