@@ -70,50 +70,6 @@ body{
     justify-self: center;
 }
 
-/* Notes Section */
-/* #saved-notes{
-    padding-top: 1rem;
-    max-width: 80rem;
-    display: grid;
-    grid: auto / auto;
-    gap: 1rem;
-    margin: 1rem;
-}
-
-.note-content{
-    background-color: rgba(253, 237, 237, 0.329);
-    padding: 1rem;
-    box-shadow: 0px 0px 7px rgba(0, 0, 0, 0.253);
-    border-radius: 10px;
-}
-
-.title-flex{
-    display: flex;
-    justify-content: space-between;
-}
-
-.title-flex button{
-    background-color: white;
-    border: none;
-    border-radius: 20px;
-    width: 6rem;
-    height: 1.5rem;
-    font-weight: bold;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.212);
-}
-
-.title-flex .button-flex{
-    display: flex;
-    gap: 1rem;
-}
-
-.title-flex>h1{
-    inline-size: clamp(10rem, 60vw ,60rem);
-    overflow-wrap: break-word;
-} */
-
-
-/* Comment Section */
 #comment-section,
 #note-section{
     padding-top: 1rem;
@@ -216,6 +172,7 @@ body{
     width: 80px;
     border: none;
 }
+
 
 @media (max-width: 1240px) {
     #text-container>p{

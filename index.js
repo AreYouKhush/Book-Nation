@@ -26,6 +26,19 @@ app.use(express.static("public"));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
 
+function getCorrectRating(ratingAvg){
+    let roundRating = Number(ratingAvg).toFixed(1) * 10;
+    const ones = roundRating%10
+    if(ones === 0 || ones === 5){
+        roundRating = roundRating;
+    }else if(ones > 5){
+        roundRating = roundRating + (5 - ones);
+    }else{
+        roundRating = roundRating - ones;
+    }
+    return roundRating;
+}
+
 async function getBooks( title ){
     let books = [];
     const result = await axios.get(`https://openlibrary.org/search.json?q=${title}`);
@@ -49,12 +62,23 @@ async function getBooks( title ){
             coverId = "images/Image Not Available.png";
         }
 
+        let ratingCount = 0;
+        let ratingAvg = 0;
+        if(result.data.docs[i].ratings_count){
+            ratingCount = result.data.docs[i].ratings_count;
+            ratingAvg = result.data.docs[i].ratings_average;
+        }
+
+        const ratingCorrection = getCorrectRating(ratingAvg);
+
         books.push({
             id: result.data.docs[i].key,
             coverURL: coverId,
             title: result.data.docs[i].title,
             publishYear: result.data.docs[i].first_publish_year,
-            authorName: authorName
+            authorName: authorName,
+            rating: ratingCount,
+            ratingAvg: ratingCorrection
         })
     }
     return books;

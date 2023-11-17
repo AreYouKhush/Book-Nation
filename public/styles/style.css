@@ -48,7 +48,7 @@ body{
 h3,
 h4{
     margin: 0;
-    padding: 10px;    
+    padding: 0.5rem;    
 }
 
 #cover-container{
@@ -78,6 +78,17 @@ h4{
 #empty p{
     font-weight: normal;
     text-transform: capitalize;
+}
+
+.ratings{
+    display: flex;
+    align-items: center;
+    padding: 0.2rem;
+    justify-content: space-between;
+}
+
+.ratings img{
+    height: 30px;
 }
 
 @media (max-width: 1260px){
