@@ -4,16 +4,27 @@ import pg from "pg";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
+import bcrypt from "bcrypt";
 
 dotenv.config();
 
+//For Remote Server
+// const db = new pg.Client({
+//     host: process.env.HOST,
+//     user: process.env.USER,
+//     database: process.env.DB,
+//     password: process.env.PASSWORD,
+//     port: 5432,
+//     ssl: true
+// })
+
+//For Local Server
 const db = new pg.Client({
-    host: process.env.HOST,
-    user: process.env.USER,
-    database: process.env.DB,
-    password: process.env.PASSWORD,
+    host: "localhost",
+    user: "postgres",
+    database: "books",
+    password: "prouddaddy@08",
     port: 5432,
-    ssl: true
 })
 
 const app = express();
@@ -338,15 +349,21 @@ app.get('/login', async(req, res) => {
 app.post('/login', async(req, res) => {
     const user = req.body["username"];
     const password = req.body["password"];
-    const response = await db.query("SELECT id FROM users WHERE user_name = $1 AND password = $2", [user, password]);
+    const response = await db.query("SELECT * FROM users WHERE user_name = $1", [user]);
     if(!response.rows.length){
         res.render('login.ejs', {error: "Username or Password are incorrect!"});
     }else{
         const id = response.rows[0].id;
-        // window.localStorage.setItem("userId", id); Local Storage does not work in noje js
-        res.cookie('id', id, {maxAge: 2 * 60 * 60 * 1000, httpOnly: true});
-        // getUserId();
-        res.redirect(`/mylibrary`);
+        const dbPassword = response.rows[0].password;
+        const isMatch = await bcrypt.compare(password, dbPassword);
+        if(isMatch){
+            // window.localStorage.setItem("userId", id); Local Storage does not work in noje js
+            res.cookie('id', id, {maxAge: 2 * 60 * 60 * 1000, httpOnly: true});
+            // getUserId();
+            res.redirect(`/mylibrary`);
+        }else{
+            res.render('login.ejs', {error: "Password is incorrect!"});
+        }
     }
 });
 
@@ -360,14 +377,14 @@ app.post('/register', async(req, res) => {
     const email = req.body["email"];
     const username = req.body["username"];
     const password = req.body["password"];
-    // console.log({fName, lName, email, username, password});
+    const hashPassword = await bcrypt.hash(password, 13);
     const response = await db.query("SELECT * FROM users WHERE user_name = $1", [username]);
     if(response.rows.length){
         res.render("register.ejs", {
             error: "Username is already taken",
         })
     }else{
-        const q = await db.query("INSERT INTO users (user_name, password, email, firstname, lastname) VALUES ($1, $2, $3, $4, $5) RETURNING id", [username, password, email, fName, lName]);
+        const q = await db.query("INSERT INTO users (user_name, password, email, firstname, lastname) VALUES ($1, $2, $3, $4, $5) RETURNING id", [username, hashPassword, email, fName, lName]);
         const id = q.rows[0].id;
         res.cookie('id', id, {maxAge: 2 * 60 * 60 * 1000, httpOnly: true});
         res.redirect('/');
